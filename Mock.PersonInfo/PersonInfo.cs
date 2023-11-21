@@ -7,4 +7,6 @@ public class PersonInfo
     public string? PersonNumber { get; set; }
 
     public string? FirstName { get; set; }
+
+    public int NumberOfTimesAccessed { get; set; }
 }
