@@ -33,6 +33,9 @@ public class PersonInfoController : ControllerBase
 
         (await _redis.StringGetAsync("numberOfCalls")).TryParse(out int numberOfCalls);
         await _redis.StringSetAsync("numberOfCalls", numberOfCalls + 1);
+        (await _redis.StringGetAsync("numberOfCalls")).TryParse(out int numberOfCallsUpdated);
+
+        personInfo.NumberOfTimesAccessed = numberOfCallsUpdated;
         
         return personInfo;
     }
