@@ -11,7 +11,7 @@ builder.Services.AddSwaggerGen();
 
 var redisConnectionOptions = ConfigurationOptions.Parse("redis");
 redisConnectionOptions.Password = Environment.GetEnvironmentVariable("REDIS_SECRET");
-builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect("redis"));
+builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(redisConnectionOptions));
 
 var app = builder.Build();
 
