@@ -9,6 +9,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+var redisConnectionOptions = ConfigurationOptions.Parse("redis");
+redisConnectionOptions.Password = Environment.GetEnvironmentVariable("REDIS_SECRET");
 builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect("redis"));
 
 var app = builder.Build();
