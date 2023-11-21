@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
+using StackExchange.Redis;
 
 namespace Mock.PersonInfo.Controllers;
 
@@ -8,14 +9,18 @@ namespace Mock.PersonInfo.Controllers;
 public class PersonInfoController : ControllerBase
 {
     private readonly ILogger<PersonInfoController> _logger;
+    private readonly IDatabase _redis;
 
-    public PersonInfoController(ILogger<PersonInfoController> logger)
+    public PersonInfoController(
+        ILogger<PersonInfoController> logger,
+        IConnectionMultiplexer redisMultiplexer)
     {
         _logger = logger;
+        _redis = redisMultiplexer.GetDatabase();
     }
 
     [HttpGet(Name = "GetPersonInfo")]
-    public PersonInfo Get()
+    public async Task<PersonInfo> Get()
     {
         var personInfo =  new PersonInfo()
         {
@@ -25,6 +30,10 @@ public class PersonInfoController : ControllerBase
         };
         
         _logger.LogDebug(JsonSerializer.Serialize(personInfo));
+
+        (await _redis.StringGetAsync("numberOfCalls")).TryParse(out int numberOfCalls);
+        await _redis.StringSetAsync("numberOfCalls", numberOfCalls + 1);
+        
         return personInfo;
     }
 }
