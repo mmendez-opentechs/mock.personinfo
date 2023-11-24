@@ -1,3 +1,4 @@
+using Mock.PersonInfo;
 using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,9 +10,21 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var redisConnectionOptions = ConfigurationOptions.Parse("redis");
-redisConnectionOptions.Password = Environment.GetEnvironmentVariable("REDIS_SECRET");
-builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(redisConnectionOptions));
+try
+{
+    var redisConnectionOptions = ConfigurationOptions.Parse("redis");
+    redisConnectionOptions.Password = Environment.GetEnvironmentVariable("REDIS_SECRET");
+    redisConnectionOptions.ConnectTimeout = 1000;
+
+    builder.Services.AddSingleton<CacheProvider>(new CacheProvider(ConnectionMultiplexer.Connect(redisConnectionOptions))
+    {
+        CacheEnabled = true
+    });
+}
+catch
+{
+    builder.Services.AddSingleton<CacheProvider>(new CacheProvider() { CacheEnabled = false });
+}
 
 var app = builder.Build();
 

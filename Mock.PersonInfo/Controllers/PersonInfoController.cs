@@ -9,14 +9,14 @@ namespace Mock.PersonInfo.Controllers;
 public class PersonInfoController : ControllerBase
 {
     private readonly ILogger<PersonInfoController> _logger;
-    private readonly IDatabase _redis;
+    private readonly CacheProvider _cacheProvider;
 
     public PersonInfoController(
         ILogger<PersonInfoController> logger,
-        IConnectionMultiplexer redisMultiplexer)
+        CacheProvider cacheProvider)
     {
         _logger = logger;
-        _redis = redisMultiplexer.GetDatabase();
+        _cacheProvider = cacheProvider;
     }
 
     [HttpGet(Name = "GetPersonInfo")]
@@ -29,13 +29,15 @@ public class PersonInfoController : ControllerBase
             PersonNumber = "54523"
         };
         
-        _logger.LogDebug(JsonSerializer.Serialize(personInfo));
+        _logger.LogInformation(JsonSerializer.Serialize(personInfo));
 
-        (await _redis.StringGetAsync("numberOfCalls")).TryParse(out int numberOfCalls);
-        await _redis.StringSetAsync("numberOfCalls", numberOfCalls + 1);
-        (await _redis.StringGetAsync("numberOfCalls")).TryParse(out int numberOfCallsUpdated);
-
-        personInfo.NumberOfTimesAccessed = numberOfCallsUpdated;
+        if (_cacheProvider.CacheEnabled)
+        {
+            int.TryParse((await _cacheProvider.GetKey("numberOfCalls")), out int numberOfCalls);
+            await _cacheProvider.SetKey("numberOfCalls", (numberOfCalls + 1).ToString());
+            int.TryParse((await _cacheProvider.GetKey("numberOfCalls")), out int numberOfCallsUpdated);
+            personInfo.NumberOfTimesAccessed = numberOfCallsUpdated;
+        }
         
         return personInfo;
     }
