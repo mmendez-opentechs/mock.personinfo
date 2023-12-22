@@ -14,8 +14,8 @@ RUN dotnet publish "Mock.PersonInfo/Mock.PersonInfo.csproj" -c Release -o /app/p
 FROM base AS final
 WORKDIR /app
 
-ENV ASPNETCORE_URLS=http://+:8080
+ENV ASPNETCORE_URLS=http://+:8082
 COPY --from=publish /app/publish .
-EXPOSE 8080
+EXPOSE 8082
 
 ENTRYPOINT ["dotnet", "Mock.PersonInfo.dll"]
