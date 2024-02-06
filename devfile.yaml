@@ -8,7 +8,7 @@ projects:
     name: mockpersoninfo
     git:
       remotes:
-        origin: https://github.com/mmendez-opentechs/mockpersoninfo.git
+        origin: https://github.com/mmendez-opentechs/mock.personinfo.git
 components:
   - name: universal-developer-image
     container:
