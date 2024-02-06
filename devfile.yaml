@@ -23,7 +23,7 @@ commands:
     exec:
       label: "Trust dev cert"
       component: universal-developer-image
-      workingDir: ${PROJECTS_ROOT}/mockgcc
+      workingDir: ${PROJECTS_ROOT}/mock.personinfo
       commandLine: dotnet dev-certs https --trust
       group:
         kind: run
