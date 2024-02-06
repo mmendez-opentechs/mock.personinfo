@@ -24,11 +24,21 @@ components:
         exposure: public
         protocol: https
 commands:
-  - id: sll
-    exec:
+  - exec:
       label: "Trust dev cert"
       component: universal-developer-image
       workingDir: ${PROJECTS_ROOT}/mock.personinfo
       commandLine: dotnet dev-certs https --trust
       group:
         kind: run
+    id: ssl
+  - exec:
+      commandLine: 'export DEBUG_URL="http://0.0.0.0:5123"'
+      component: universal-developer-image
+      hotReloadCapable: true
+      group:
+        isDefault: true
+        kind: run
+      label: Set Netcore Debug URL
+      workingDir: ${PROJECTS_ROOT}/mock.personinfo
+    id: netcore-dev-mode
