@@ -8,7 +8,7 @@ projects:
     name: mockpersoninfo
     git:
       remotes:
-        origin: https://github.com/mmendez-opentechs/mockpersoninfo.git
+        origin: https://github.com/mmendez-opentechs/mock.personinfo.git
 components:
   - name: universal-developer-image
     container:
@@ -18,12 +18,17 @@ components:
       cpuLimit: '2'
       cpuRequest: '1'
       mountSources: true
+      endpoints:
+      - name: netcore-debug
+        targetPort: 5123
+        exposure: public
+        protocol: https
 commands:
   - id: sll
     exec:
       label: "Trust dev cert"
       component: universal-developer-image
-      workingDir: ${PROJECTS_ROOT}/mockgcc
+      workingDir: ${PROJECTS_ROOT}/mock.personinfo
       commandLine: dotnet dev-certs https --trust
       group:
         kind: run
