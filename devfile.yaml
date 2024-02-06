@@ -33,7 +33,7 @@ commands:
         kind: run
     id: ssl
   - exec:
-      commandLine: 'export DEBUG_URL="http://0.0.0.0:5123"'
+      commandLine: export DEBUG_URL="http://0.0.0.0:5123"
       component: universal-developer-image
       hotReloadCapable: true
       group:
